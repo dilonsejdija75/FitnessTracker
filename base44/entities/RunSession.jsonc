@@ -1,0 +1,49 @@
+{
+  "name": "RunSession",
+  "type": "object",
+  "properties": {
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "distance_km": {
+      "type": "number",
+      "description": "Distance in kilometers"
+    },
+    "duration_minutes": {
+      "type": "number"
+    },
+    "pace_min_per_km": {
+      "type": "number"
+    },
+    "calories_burned": {
+      "type": "number"
+    },
+    "route_name": {
+      "type": "string"
+    },
+    "terrain": {
+      "type": "string",
+      "enum": [
+        "road",
+        "trail",
+        "track",
+        "treadmill"
+      ]
+    },
+    "notes": {
+      "type": "string"
+    },
+    "heart_rate_avg": {
+      "type": "number"
+    },
+    "elevation_gain": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "date",
+    "distance_km",
+    "duration_minutes"
+  ]
+}

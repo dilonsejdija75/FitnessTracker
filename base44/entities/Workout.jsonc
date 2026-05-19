@@ -1,0 +1,81 @@
+{
+  "name": "Workout",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Workout name"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "strength",
+        "cardio",
+        "flexibility",
+        "hiit",
+        "yoga",
+        "other"
+      ],
+      "description": "Type of workout"
+    },
+    "duration_minutes": {
+      "type": "number",
+      "description": "Duration in minutes"
+    },
+    "calories_burned": {
+      "type": "number",
+      "description": "Estimated calories burned"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Workout date"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Notes about the workout"
+    },
+    "exercises": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "sets": {
+            "type": "number"
+          },
+          "reps": {
+            "type": "number"
+          },
+          "weight": {
+            "type": "number"
+          },
+          "duration_seconds": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "mood": {
+      "type": "string",
+      "enum": [
+        "great",
+        "good",
+        "okay",
+        "tired",
+        "exhausted"
+      ]
+    },
+    "completed": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "title",
+    "type",
+    "date"
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "name": "Goal",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "weight",
+        "workout_frequency",
+        "calories",
+        "distance",
+        "custom"
+      ]
+    },
+    "target_value": {
+      "type": "number"
+    },
+    "current_value": {
+      "type": "number",
+      "default": 0
+    },
+    "unit": {
+      "type": "string"
+    },
+    "deadline": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "completed",
+        "paused"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "title",
+    "type",
+    "target_value"
+  ]
+}

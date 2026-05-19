@@ -5,7 +5,16 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
-// Add page imports here
+import AppLayout from './components/layout/AppLayout';
+import Dashboard from './pages/Dashboard';
+import Analytics from './pages/Analytics';
+import Exercises from './pages/Exercises';
+import RunTracker from './pages/RunTracker';
+import Calendar from './pages/Calendar';
+import Nutrition from './pages/Nutrition';
+import Account from './pages/Account';
+import Information from './pages/Information';
+import Settings from './pages/Settings';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -33,7 +42,17 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
-      {/* Add your page Route elements here */}
+      <Route element={<AppLayout />}>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/analytics" element={<Analytics />} />
+        <Route path="/exercises" element={<Exercises />} />
+        <Route path="/run-tracker" element={<RunTracker />} />
+        <Route path="/calendar" element={<Calendar />} />
+        <Route path="/nutrition" element={<Nutrition />} />
+        <Route path="/account" element={<Account />} />
+        <Route path="/information" element={<Information />} />
+        <Route path="/settings" element={<Settings />} />
+      </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
