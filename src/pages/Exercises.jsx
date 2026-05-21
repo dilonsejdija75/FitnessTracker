@@ -12,6 +12,14 @@ import { toast } from 'sonner';
 import WorkoutCard from '../components/exercises/WorkoutCard';
 
 const WORKOUT_TYPES = ['strength', 'cardio', 'flexibility', 'hiit', 'yoga', 'other'];
+const WORKOUT_SUGGESTIONS = {
+  strength: ['Bench Press', 'Squat', 'Deadlift', 'Overhead Press'],
+  cardio: ['Treadmill Run', 'Cycling', 'Rowing', 'Jump Rope'],
+  flexibility: ['Yoga Stretch', 'Forward Fold', 'Hip Mobility', 'Spinal Twist'],
+  hiit: ['Tabata Sprints', 'Burpee Blast', 'Circuit Training', 'Kettlebell Swings'],
+  yoga: ['Vinyasa Flow', 'Sun Salutation', 'Restorative Yoga', 'Balance Sequence'],
+  other: ['Core Circuit', 'Mobility Session', 'Warm-Up Flow', 'Recovery Walk'],
+};
 const MOODS = ['great', 'good', 'okay', 'tired', 'exhausted'];
 
 export default function Exercises() {
@@ -26,7 +34,7 @@ export default function Exercises() {
 
   const queryClient = useQueryClient();
 
-  const { data: workouts = [], isLoading } = useQuery({
+  const { data: workouts = [], isLoading, isError, error } = useQuery({
     queryKey: ['workouts'],
     queryFn: () => base44.entities.Workout.list('-date', 50),
   });
@@ -61,9 +69,22 @@ export default function Exercises() {
     });
   };
 
+  const getWorkoutSearchText = (workout) => {
+    const exerciseNames = workout.exercises?.map(ex => ex.name).join(' ') || '';
+    const typeValue = workout.type || workout.category || '';
+    return [workout.title, typeValue, workout.notes, exerciseNames].join(' ').toLowerCase();
+  };
+
+  const workoutCounts = WORKOUT_TYPES.reduce((acc, type) => {
+    acc[type] = workouts.filter(w => String(w.type || w.category || '').toLowerCase() === type).length;
+    return acc;
+  }, {});
+
   const filtered = workouts.filter(w => {
-    const matchSearch = w.title?.toLowerCase().includes(search.toLowerCase());
-    const matchType = filterType === 'all' || w.type === filterType;
+    const query = search.toLowerCase().trim();
+    const matchSearch = !query || getWorkoutSearchText(w).includes(query);
+    const workoutType = String(w.type || w.category || '').toLowerCase();
+    const matchType = filterType === 'all' || workoutType === filterType.toLowerCase();
     return matchSearch && matchType;
   });
 
@@ -132,24 +153,66 @@ export default function Exercises() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1">
+      <div className="flex flex-col gap-3">
+        <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Search workouts..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
+          <Input placeholder="Search workouts or categories..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
         </div>
-        <Select value={filterType} onValueChange={setFilterType}>
-          <SelectTrigger className="w-[160px]"><SelectValue /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Types</SelectItem>
-            {WORKOUT_TYPES.map(t => <SelectItem key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</SelectItem>)}
-          </SelectContent>
-        </Select>
+
+        <div className="flex flex-wrap gap-2">
+          <Button variant={filterType === 'all' ? 'secondary' : 'outline'} size="sm" onClick={() => setFilterType('all')}>
+            All Types ({workouts.length})
+          </Button>
+          {WORKOUT_TYPES.map(type => (
+            <Button
+              key={type}
+              variant={filterType === type ? 'secondary' : 'outline'}
+              size="sm"
+              onClick={() => setFilterType(type)}
+              className="capitalize"
+            >
+              {type} ({workoutCounts[type] || 0})
+            </Button>
+          ))}
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {WORKOUT_TYPES.map(type => (
+            <div key={type} className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
+              <div className="flex items-center justify-between gap-2">
+                <p className="font-semibold capitalize">{type}</p>
+                <span className="text-xs text-muted-foreground">{workoutCounts[type] || 0} saved</span>
+              </div>
+              <div className="mt-3 space-y-1 text-sm text-muted-foreground">
+                {WORKOUT_SUGGESTIONS[type].map(workout => (
+                  <p key={workout} className="truncate">{workout}</p>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="w-[160px]">
+          <Select value={filterType} onValueChange={setFilterType}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Types</SelectItem>
+              {WORKOUT_TYPES.map(t => <SelectItem key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* Workout Grid */}
       {isLoading ? (
         <div className="flex justify-center py-12">
           <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+        </div>
+      ) : isError ? (
+        <div className="text-center py-16 text-destructive">
+          <Dumbbell className="w-12 h-12 mx-auto mb-3 opacity-30" />
+          <p className="font-medium">Unable to load workouts</p>
+          <p className="text-sm">{error?.message || 'Check your Base44 backend configuration.'}</p>
         </div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-16 text-muted-foreground">

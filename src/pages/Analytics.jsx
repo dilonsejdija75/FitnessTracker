@@ -27,14 +27,44 @@ export default function Analytics() {
     queryFn: () => base44.entities.BodyMetric.list('-date', 30),
   });
 
+  const demoWorkouts = [
+    { date: format(subDays(new Date(), 6), 'yyyy-MM-dd'), type: 'strength', duration_minutes: 45, calories_burned: 320 },
+    { date: format(subDays(new Date(), 5), 'yyyy-MM-dd'), type: 'cardio', duration_minutes: 30, calories_burned: 300 },
+    { date: format(subDays(new Date(), 4), 'yyyy-MM-dd'), type: 'yoga', duration_minutes: 40, calories_burned: 180 },
+    { date: format(subDays(new Date(), 3), 'yyyy-MM-dd'), type: 'hiit', duration_minutes: 25, calories_burned: 290 },
+    { date: format(subDays(new Date(), 2), 'yyyy-MM-dd'), type: 'strength', duration_minutes: 50, calories_burned: 360 },
+    { date: format(subDays(new Date(), 1), 'yyyy-MM-dd'), type: 'flexibility', duration_minutes: 30, calories_burned: 130 },
+    { date: format(new Date(), 'yyyy-MM-dd'), type: 'other', duration_minutes: 35, calories_burned: 210 },
+  ];
+
+  const demoRuns = [
+    { date: format(subDays(new Date(), 6), 'yyyy-MM-dd'), duration_minutes: 28, calories_burned: 290 },
+    { date: format(subDays(new Date(), 4), 'yyyy-MM-dd'), duration_minutes: 34, calories_burned: 340 },
+    { date: format(subDays(new Date(), 2), 'yyyy-MM-dd'), duration_minutes: 24, calories_burned: 260 },
+  ];
+
+  const demoMetrics = [
+    { date: format(subDays(new Date(), 6), 'yyyy-MM-dd'), weight_kg: 79.4 },
+    { date: format(subDays(new Date(), 5), 'yyyy-MM-dd'), weight_kg: 79.1 },
+    { date: format(subDays(new Date(), 4), 'yyyy-MM-dd'), weight_kg: 78.9 },
+    { date: format(subDays(new Date(), 3), 'yyyy-MM-dd'), weight_kg: 78.7 },
+    { date: format(subDays(new Date(), 2), 'yyyy-MM-dd'), weight_kg: 78.6 },
+    { date: format(subDays(new Date(), 1), 'yyyy-MM-dd'), weight_kg: 78.4 },
+    { date: format(new Date(), 'yyyy-MM-dd'), weight_kg: 78.2 },
+  ];
+
+  const displayedWorkouts = workouts.length ? workouts : demoWorkouts;
+  const displayedRuns = runs.length ? runs : demoRuns;
+  const displayedMetrics = metrics.length ? metrics : demoMetrics;
+
   const daysCount = period === 'week' ? 7 : period === 'month' ? 30 : 90;
 
   // Activity over time
   const activityData = Array.from({ length: daysCount }, (_, i) => {
     const date = subDays(new Date(), daysCount - 1 - i);
     const dateStr = format(date, 'yyyy-MM-dd');
-    const dayWorkouts = workouts.filter(w => w.date === dateStr);
-    const dayRuns = runs.filter(r => r.date === dateStr);
+    const dayWorkouts = displayedWorkouts.filter(w => w.date === dateStr);
+    const dayRuns = displayedRuns.filter(r => r.date === dateStr);
     return {
       date: format(date, daysCount > 14 ? 'MMM d' : 'EEE'),
       workouts: dayWorkouts.length + dayRuns.length,
@@ -45,11 +75,11 @@ export default function Analytics() {
 
   // Workout type distribution
   const typeCounts = {};
-  workouts.forEach(w => { typeCounts[w.type] = (typeCounts[w.type] || 0) + 1; });
+  displayedWorkouts.forEach(w => { typeCounts[w.type] = (typeCounts[w.type] || 0) + 1; });
   const typeData = Object.entries(typeCounts).map(([name, value]) => ({ name, value }));
 
   // Weight trend
-  const weightData = [...metrics].reverse().filter(m => m.weight_kg).map(m => ({
+  const weightData = [...displayedMetrics].reverse().filter(m => m.weight_kg).map(m => ({
     date: format(new Date(m.date), 'MMM d'),
     weight: m.weight_kg,
   }));

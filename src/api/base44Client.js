@@ -3,12 +3,12 @@ import { appParams } from '@/lib/app-params';
 
 const { appId, token, functionsVersion, appBaseUrl } = appParams;
 
-//Create a client with authentication required
+// Create a client configured to call the app backend directly.
 export const base44 = createClient({
   appId,
   token,
   functionsVersion,
-  serverUrl: '',
-  requiresAuth: false,
-  appBaseUrl
+  serverUrl: appBaseUrl,
+  requiresAuth: Boolean(token),
+  appBaseUrl,
 });

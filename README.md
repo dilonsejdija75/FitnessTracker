@@ -28,6 +28,13 @@ VITE_BASE44_APP_BASE_URL=https://my-to-do-list-81bfaad7.base44.app
 
 Run the app: `npm run dev`
 
+**Portfolio-ready feature summary**
+
+- Workout management with category filters: strength, cardio, flexibility, HIIT, yoga, and other
+- Seed script to populate the database with 24 demo workouts, run sessions, and body metrics
+- Analytics page showing activity trends, calories burned, workout type distribution, and weight trend data
+- Backend-ready Base44 client configuration using `VITE_BASE44_APP_BASE_URL`
+
 **Publish your changes**
 
 Open [Base44.com](http://Base44.com) and click on Publish.

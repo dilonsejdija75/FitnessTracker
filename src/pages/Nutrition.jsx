@@ -48,31 +48,49 @@ export default function Nutrition() {
   const searchFood = async () => {
     if (!searchQuery.trim()) return;
     setIsSearching(true);
-    const result = await base44.integrations.Core.InvokeLLM({
-      prompt: `Search for nutritional information of "${searchQuery}". Return nutritional data per standard serving.`,
-      response_json_schema: {
-        type: "object",
-        properties: {
-          results: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                food_name: { type: "string" },
-                calories: { type: "number" },
-                protein_g: { type: "number" },
-                carbs_g: { type: "number" },
-                fat_g: { type: "number" },
-                fiber_g: { type: "number" },
-                serving_size: { type: "string" }
+    try {
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: `Search for nutritional information of "${searchQuery}". Return nutritional data per standard serving.`,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            results: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  food_name: { type: "string" },
+                  calories: { type: "number" },
+                  protein_g: { type: "number" },
+                  carbs_g: { type: "number" },
+                  fat_g: { type: "number" },
+                  fiber_g: { type: "number" },
+                  serving_size: { type: "string" }
+                }
               }
             }
           }
         }
-      }
-    });
-    setSearchResults(result.results || []);
-    setIsSearching(false);
+      });
+
+      const normalized = typeof result === 'string'
+        ? (() => {
+            try {
+              return JSON.parse(result);
+            } catch {
+              return null;
+            }
+          })()
+        : result;
+
+      setSearchResults(Array.isArray(normalized?.results) ? normalized.results : []);
+    } catch (error) {
+      console.error('Food search failed', error);
+      toast.error('Unable to search food right now. Please try again.');
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
   };
 
   const selectFood = (food) => {
