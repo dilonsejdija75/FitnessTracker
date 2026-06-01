@@ -29,7 +29,7 @@ const base44 = createClient({
   appId,
   token,
   functionsVersion,
-  serverUrl: '',
+  serverUrl: appBaseUrl,
   requiresAuth: Boolean(token),
   appBaseUrl,
 });
