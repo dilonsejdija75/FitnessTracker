@@ -1,6 +1,6 @@
 import React from 'react';
 import { format } from 'date-fns';
-import { Timer, Flame, Trash2, Smile, Meh, Frown } from 'lucide-react';
+import { Timer, Flame, Trash2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';

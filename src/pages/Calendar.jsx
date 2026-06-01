@@ -5,7 +5,6 @@ import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isTod
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Dumbbell, MapPin, Apple } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
 
 export default function Calendar() {
   const [currentMonth, setCurrentMonth] = useState(new Date());

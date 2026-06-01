@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { format, subDays, startOfWeek, endOfWeek } from 'date-fns';
+import { format, subDays } from 'date-fns';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dumbbell, Flame, Timer, TrendingUp } from 'lucide-react';
